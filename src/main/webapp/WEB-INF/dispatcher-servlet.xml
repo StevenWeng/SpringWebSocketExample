@@ -19,9 +19,9 @@
 	<mvc:resources location="/" mapping="/*.ico" />
 	<mvc:resources location="/" mapping="/*.html" />
 
-<!-- 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
           p:prefix="/"
-          p:suffix=".jsp"/> -->
+          p:suffix=".jsp"/> 
           
     
 	<websocket:message-broker application-destination-prefix="/app">

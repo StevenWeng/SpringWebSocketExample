@@ -7,41 +7,40 @@
 <script type="text/javascript" src="/js/sockjs-0.3.4.min.js"></script>
 <script type="text/javascript" src="/js/stomp.min.js"></script>
 <script type="text/javascript">
-	$(function(){
+	$(function() {
 
-		 var socket = new SockJS("/echo");
-		 var stompClient = Stomp.over(socket);
+		var socket = new SockJS("/echo");
+		var stompClient = Stomp.over(socket);
 
-		 // callback function to be called when stomp client is connected to server (see Note 2)
-		 var connectCallback = function() {
-		      alert("connected!");
-		      stompClient.subscribe('/topic/greetings', function(greeting){
-		           alert(JSON.parse(greeting.body).content);
-		      });
-		 }; 
+		// callback function to be called when stomp client is connected to server (see Note 2)
+		var connectCallback = function() {
+			alert("connected!");
+			stompClient.subscribe('/topic/greetings', function(greeting) {
+				$('#messages').html($('#messages').html() + JSON.parse(greeting.body).content + '<br/>');
+			});
+		};
 
-		 // callback function to be called when stomp client could not connect to server (see Note 3)
-		 var errorCallback = function(error) {
-		      // display the error's message header:
-		      alert(error.headers.message);
-		 };
+		// callback function to be called when stomp client could not connect to server (see Note 3)
+		var errorCallback = function(error) {
+			// display the error's message header:
+			alert(error.headers.message);
+		};
 
-		 // Connect as guest (Note 4)
-		 stompClient.connect("guest", "guest", connectCallback, errorCallback);
+		// Connect as guest (Note 4)
+		stompClient.connect("guest", "guest", connectCallback, errorCallback);
 
-		 
-		 $('#sendBtn').click(function(){
-			 stompClient.send("/app/echo", 'test');
-		 });
+		$('#sendBtn').click(function() {
+			var msg = $('#msg').val();
+			$.get("/broke?msg="+msg, function(data) {
+				
+			});
+		});
 	});
-	
-
-	
-
-
 </script>
 </head>
 <body>
-<input type="button" value="send" id="sendBtn" />
+	<input type="text" id="msg"/>
+	<input type="button" value="send" id="sendBtn" />
+	<div id="messages"></div>
 </body>
 </html>
