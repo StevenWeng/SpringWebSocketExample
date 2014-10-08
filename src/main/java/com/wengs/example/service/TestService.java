@@ -28,6 +28,12 @@ public class TestService {
 		// this.messagingTemplate.convertAndSendToUser(result.user,
 		// "/queue/position-updates", result.position, map);
 	}
+	
+	@Scheduled(fixedDelay=1500)
+	public void autoSend(){
+		this.messagingTemplate.convertAndSend("/topic/greetings", new Greeting(
+				"Hello Auto !"));
+	}
 
 	public SimpMessageSendingOperations getMessagingTemplate() {
 		return messagingTemplate;
