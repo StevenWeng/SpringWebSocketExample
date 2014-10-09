@@ -18,12 +18,14 @@
 			stompClient.subscribe('/topic/greetings', function(greeting) {
 				$('#messages').html($('#messages').html() + JSON.parse(greeting.body).content + '<br/>');
 			});
+			/* stompClient.subscribe('/topic/greetings/*', function(greeting) {
+				alert(JSON.parse(greeting.body).content);
+			}); */
 		};
 
 		// callback function to be called when stomp client could not connect to server (see Note 3)
 		var errorCallback = function(error) {
-			// display the error's message header:
-			//alert(error.headers.message);
+			alert(error.headers.message);
 		};
 
 		// Connect as guest (Note 4)

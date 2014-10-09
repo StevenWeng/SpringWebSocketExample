@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html ng-app="regChannelApp">
+<head>
+<meta charset="UTF-8">
+<title>玩具</title>
+<style type="text/css">
+.onChange{
+  background-color: yellow;
+}
+</style>
+<script type="text/javascript" src="/js/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="/js/sockjs-0.3.4.min.js"></script>
+<script type="text/javascript" src="/js/stomp.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js"></script>
+<script type="text/javascript">
+var socket = new SockJS("/echo");
+var stompClient = Stomp.over(socket);
+$(function() {
+	var connectCallback = function() {
+		alert("connected!");
+	};
+	var errorCallback = function(error) {
+		alert(error.headers.message);
+	};
+	stompClient.connect("guest", "guest", connectCallback, errorCallback);
+});
+angular.module("regChannelApp",[])
+.directive("countChange",function(){
+  return function(scope, element, attrs) {
+    scope.$watch(attrs["countChange"],function(oldValue,newValue){
+      if(oldValue!=newValue){
+       $(element).addClass("onChange");
+       setTimeout(
+       function() 
+       {
+          $(element).removeClass("onChange");
+       }, 1000); 
+      }
+    });
+  };
+})
+.controller("regChannelCtrl",function($scope){
+	var viewModel = function(){
+		var self = this;
+		self.channels = [
+        	{name : '頻道1' , status : 'OFF' , value : 0 ,subId :'' ,subcribePath : '/topic/channel/1'},
+        	{name : '頻道2' , status : 'OFF' , value : 0 ,subId :'' ,subcribePath : '/topic/channel/2'},
+        	{name : '頻道3' , status : 'OFF' , value : 0 ,subId :'' ,subcribePath : '/topic/channel/3'},
+        	{name : '頻道4' , status : 'OFF' , value : 0 ,subId :'' ,subcribePath : '/topic/channel/4'},
+        	{name : '頻道5' , status : 'OFF' , value : 0 ,subId :'' ,subcribePath : '/topic/channel/5'}
+        ];
+		self.statusChange = function(channel){
+			if(channel.status == 'ON'){
+				channel.subId = stompClient.subscribe(channel.subcribePath, function(greeting) {
+					channel.value = JSON.parse(greeting.body).content;
+					$scope.$apply();
+				});
+			}else{
+				stompClient.unsubscribe(channel.subId.id);
+				channel.value = 0;
+			}
+		};
+	}
+	
+	$scope.model = new viewModel();
+});
+</script>
+</head>
+<body ng-controller="regChannelCtrl">
+	<ul>
+		<li ng-repeat="channel in model.channels">
+			<input type="checkbox" ng-model="channel.status" ng-true-value="ON" ng-false-value="OFF" ng-change="model.statusChange(channel)" />
+			<span ng-bind="channel.name"></span>
+			<p count-change="channel.value">{{channel.value}}</p>
+		</li>
+	</ul>
+</body>
+</html>

@@ -34,14 +34,7 @@
 	<websocket:message-broker
 		application-destination-prefix="/app">
 		<websocket:stomp-endpoint path="/echo">
-			
-			<websocket:sockjs  session-cookie-needed="false" client-library-url="http://10.1.41.80:8080/js/sockjs-0.3.4.min.js"  >
-				<websocket:transport-handlers register-defaults="true">
-					<bean class="org.springframework.web.socket.sockjs.transport.handler.XhrStreamingTransportHandler"></bean>
-					<bean class="org.springframework.web.socket.sockjs.transport.handler.XhrPollingTransportHandler"></bean>
-					<bean class="org.springframework.web.socket.sockjs.transport.handler.XhrReceivingTransportHandler"></bean>
-				</websocket:transport-handlers>
-			</websocket:sockjs>
+			<websocket:sockjs />
 		</websocket:stomp-endpoint>
 		
 		<websocket:simple-broker prefix="/topic" />
